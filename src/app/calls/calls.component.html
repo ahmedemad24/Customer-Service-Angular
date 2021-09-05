@@ -1,0 +1,63 @@
+<div class="container">
+    <button type="button" class="m-0 btn btn-light btn-outline-secondary my-3" data-bs-toggle="modal" data-bs-target="#exampleModal" 
+      data-backdrop="static" data-keyboard="false">
+          New Call
+        </button>
+      <table class="table table-striped table-hover">
+          <thead>
+              <tr>
+                  <th>Call ID</th>
+                  <th>Call Date</th>
+                  <th>Options</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let item of CallsList | paginate : {
+                itemsPerPage: 5,
+                currentPage: page,
+                 totalItems: TotalLength
+              }">
+                  <td>{{item.callId}}</td>
+                  <td>{{item.callDate | date:"MM/dd/yy"}}</td>
+                  <td>
+                      <button type="button" (click)="deleteCall(item.callId,item.customerId)"  class="btn btn-light me-2">
+                          Delete
+                      </button>
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+      <pagination-controls
+    previousLabel="Prev"
+    nextLabel="Next"
+    (pageChange)="onTableDataChange($event)">
+  </pagination-controls>
+    
+          <!-- ADD & EDIT Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Calls Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="CallsForm"(ngSubmit)="AddNewCall()">  
+              <input formControlName="CallId" hidden >
+            <div class="form-group mb-2">
+              <label class="form-label">
+                Calls Date
+              </label>
+              <div class="form-control">
+                <input type="date" class="form-control" formControlName="callDate" matInput placeholder="Call Date" >
+              </div>
+            </div>
+                <input class="form-control" hidden  formControlName="CustomerId" matTooltip="Enter Customer ID" matInput placeholder="Customer ID" type="Number">
+            <button class="btn btn-success mx-auto" type="submit" data-bs-dismiss="modal" >Confirm</button>
+          </form>
+        </div>
+        </div>
+      </div>
+    </div>
+    <a routerLink="/customer" class="btn btn-dark my-4"> Back To Customer </a>
+  </div>

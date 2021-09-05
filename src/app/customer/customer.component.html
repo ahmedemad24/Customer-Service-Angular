@@ -1,0 +1,127 @@
+<div class="container">
+  <button type="button" class="m-0 btn btn-light btn-outline-secondary me-2 my-3" data-bs-toggle="modal" data-bs-target="#exampleModal" 
+    data-backdrop="static" data-keyboard="false">
+        New Customer
+      </button>
+      <button class="btn btn-light btn-outline-success me-2" type="button" (click)="RefreshCustList()">Refresh</button>
+      <button class="btn btn-light btn-outline-warning me-2" (click)="exportexcel()">Export Excel</button>
+      <button class="btn btn-light btn-outline-info me-2" (click)="Print()">Print</button>
+        <form class="form-group">
+        <div class="search">
+          <h3>Search : </h3>
+          <input class="form-control searchTerm" type="text" name="searchTerm" placeholder="Filter by name or address"
+            [(ngModel)]="searchTerm"/>
+        </div>
+      </form>
+    <table class="table table-striped table-hover" id="table-excel">
+        <thead>
+            <tr>
+                <th>Calls</th>
+                <th>Customer Name</th>
+                <th>Customer Address</th>
+                <th>Customer Phone</th>
+                <th>Customer Email</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of CustomersList | pipes: searchTerm | paginate : {
+              itemsPerPage: 5,
+              currentPage: page,
+               totalItems: TotalLength
+            } ">
+                <td>
+                    <a routerLink="/calls/{{item.customerId}}"> Calls</a>
+            </td>
+                <td>{{item.customerName}}</td>
+                <td>{{item.customerAddress}}</td>
+                <td>{{item.customerPhone}}</td>
+                <td>{{item.customerEmail}}</td>
+                <td>
+                    <button (click)="updateCustomer(item.customerId)"data-bs-toggle="modal" data-bs-target="#exampleModal" 
+                    data-backdrop="static" data-keyboard="false" type="button" class="btn btn-light me-2">
+                        Edit
+                    </button>
+                    <button type="button" (click)="deleteCustomer(item.customerId)"  class="btn btn-light me-2">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <pagination-controls
+    previousLabel="Prev"
+    nextLabel="Next"
+    (pageChange)="onTableDataChange($event)">
+  </pagination-controls>  
+
+        <!-- ADD & EDIT Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Customer Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="CustomerForm"(ngSubmit)="AddNewCustomer()">  
+            <input formControlName="CustomerId" hidden >
+          <div class="form-group mb-2">
+            <label class="form-label">
+              Name
+            </label>
+            <div class="form-control">
+              <input class="form-control" formControlName="CustomerName" matTooltip="Enter Customer Name" matInput placeholder="Customer Name" type="text">
+            </div>
+            <label *ngIf="
+                f.CustomerName.touched && f.CustomerName.errors?.required
+              " class="text-danger">
+              This field is Required
+            </label>
+          </div>
+          <div class="form-group mb-2">
+            <label class="form-label">
+              Address
+            </label>
+            <div class="form-control">
+              <input class="form-control"  formControlName="CustomerAddress" matInput placeholder="Customer Address" type="text">
+              <label *ngIf="
+                f.CustomerAddress.touched && f.CustomerAddress.errors?.required
+              " class="text-danger">
+              This field is Required
+            </label>
+            </div>
+          </div>
+          <div class="form-group mb-2">
+            <label class="form-label">
+              Phone
+            </label>
+            <div class="form-control">
+              <input class="form-control" formControlName="CustomerPhone"  matInput placeholder="Customer Phone" type="number">
+              <label *ngIf="
+                f.CustomerPhone.touched && f.CustomerPhone.errors?.required
+              " class="text-danger">
+              This field is Required
+            </label>
+            </div>
+          </div>
+          <div class="form-group mb-2">
+            <label class="form-label">
+              Email
+            </label>
+            <div class="form-control">
+              <input class="form-control" formControlName="CustomerEmail" matInput placeholder="Customer Email"  type="email">
+              <label *ngIf="
+                f.CustomerEmail.touched && f.CustomerEmail.errors?.required
+              " class="text-danger">
+              This field is Required
+            </label>
+            </div>
+          </div>
+          <button class="btn btn-success mx-auto" type="submit" data-bs-dismiss="modal" >Confirm</button>
+        </form>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
